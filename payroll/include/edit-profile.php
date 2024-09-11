@@ -94,10 +94,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form action="edit-profile.php" method="POST">
-            <!-- <div class="form-group">
+            <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username']); ?>" class="form-control">
-            </div> -->
+            </div>
 
             <div class="form-group">
                 <label for="email">Email</label>

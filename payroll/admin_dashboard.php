@@ -51,12 +51,12 @@ $searchQuery = "SELECT e.name, d.name AS department_name, j.job_group AS job_gro
 
 $searchResult = mysqli_query($conn, $searchQuery);
 
-// Redirect to clear the search query from the URL after displaying the results
-if (!empty($search)) {
-    // If search was performed, redirect after loading the page
-    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
-    exit();
-}
+// // Redirect to clear the search query from the URL after displaying the results
+// if (!empty($search)) {
+//     // If search was performed, redirect after loading the page
+//     header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+//     exit();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,12 +99,12 @@ if (!empty($search)) {
             </button>
             <!-- Search Form -->
              <!-- Search Form -->
-             <div class="search-bar">
+             <!-- <div class="search-bar">
                 <form method="GET" action="">
                     <input type="text" name="search" placeholder="Search Employee by Name or Department" class="form-control" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
                     <button type="submit" class="btn btn-primary mt-2">Search</button>
                 </form>
-            </div>
+            </div> -->
             <!-- Welcome message -->
             <div id="content-area">
                 <p>You are logged in as <strong><?php echo htmlspecialchars($role); ?></strong>.</p>
