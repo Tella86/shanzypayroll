@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Selector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Styling for theme selector container */
+        .theme-selector {
+            display: none; /* Initially hidden */
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        /* Each theme option */
+        .theme-option {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 50%;
+        }
+        .theme-option:hover {
+            border-color: #333;
+        }
+        .settings-icon {
+            font-size: 24px;
+            cursor: pointer;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Settings icon to toggle the theme selector -->
+
+    <i class="fas fa-cog settings-icon" id="settingsIcon"></i>
+
+
+    <!-- Theme selector -->
+
+    <div class="theme-selector" id="themeSelector"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Toggle the visibility of the theme selector when the settings icon is clicked
+        $('#settingsIcon').on('click', function () {
+            $('#themeSelector').toggle(); // Show or hide the theme selector
+        });
+    
+        // Change theme color on clicking a theme option
+        $(document).on('click', '.theme-option', function () {
+            var color = $(this).data('color');
+            $('nav').css('background-color', color);
+        });
+    
+        window.onload = function () {
+            // Fetch the saved user theme from the backend
+            fetch('/get-theme.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.themeColor) {
+                        document.body.style.backgroundColor = data.themeColor; // Apply saved theme
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching saved theme:', error);
+                });
+    
+            // Fetch available themes from the backend
+            fetch('/fetch-themes.php')
+                .then(response => response.json())
+                .then(themes => {
+                    const themeSelector = document.getElementById('themeSelector');
+    
+                    themes.forEach(theme => {
+                        // Create a div for each theme option
+                        const themeOption = document.createElement('div');
+                        themeOption.classList.add('theme-option');
+                        themeOption.setAttribute('data-color', theme.background_color);
+                        themeOption.style.backgroundColor = theme.background_color;
+                        themeOption.style.color = theme.text_color;
+    
+                        // Append to theme selector
+                        themeSelector.appendChild(themeOption);
+    
+                        // Add click event to apply theme and save it
+                        themeOption.addEventListener('click', function () {
+                            const selectedColor = theme.background_color;
+                            document.body.style.backgroundColor = selectedColor;
+    
+                            // Save the selected theme to the backend
+                            fetch('/save-theme.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ themeColor: selectedColor }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Theme saved:', data);
+                            })
+                            .catch(error => {
+                                console.error('Error saving theme:', error);
+                            });
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching themes:', error);
+                });
+        };
+    </script>
+
+</body>
+</html>

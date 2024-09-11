@@ -1,0 +1,70 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #4cc9f0;
+    color: #fff;
+    transition: all 0.3s;
+}
+#sidebar.active {
+    margin-left: -250px;
+}
+#sidebar ul.components {
+    padding: 20px;
+}
+#sidebar ul li {
+    padding: 10px;
+    font-size: 1.2em;
+}
+#sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+#sidebar ul li a:hover {
+    background: #f2e8cf;
+}
+#content {
+    width: 100%;
+    padding: 20px;
+}
+.toggle-btn {
+    background: #4cc9f0;
+    color: #fff;
+    border: none;
+    margin: 10px;
+}
+.settings-icon {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+/* Styling for theme selector container */
+.theme-selector {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+/* Each theme option */
+.theme-option {
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 50%;
+}
+.theme-option:hover {
+    border-color: #333;
+}
+.settings-icon {
+    font-size: 24px;
+    cursor: pointer;
+}

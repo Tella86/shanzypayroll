@@ -1,0 +1,114 @@
+-- Users Table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(15),
+    role ENUM('admin', 'student', 'staff', 'parent') NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Students Table
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    class VARCHAR(50),
+    address VARCHAR(255),
+    parent_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Staff Table
+CREATE TABLE staff (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    department VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Departments Table
+CREATE TABLE departments (
+    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    department_name VARCHAR(255) NOT NULL
+);
+
+-- Courses Table
+CREATE TABLE courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(255) NOT NULL,
+    department_id INT,
+    FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE
+);
+
+-- Attendance Table
+CREATE TABLE attendance (
+    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT,
+    attendance_date DATE NOT NULL,
+    status ENUM('Present', 'Absent') NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+-- Classes Table
+CREATE TABLE classes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(50),
+    subject VARCHAR(50),
+    teacher_id INT,
+    FOREIGN KEY (teacher_id) REFERENCES staff(id) ON DELETE SET NULL
+);
+
+-- Transport Table
+CREATE TABLE transport (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    route VARCHAR(255),
+    bus_no VARCHAR(10),
+    pickup_time TIME,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+-- Marks Table
+CREATE TABLE marks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    class_id INT NOT NULL,
+    subject VARCHAR(50),
+    marks_obtained INT,
+    total_marks INT,
+    date DATE,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
+);
+
+-- Fees Categories Table
+CREATE TABLE fees_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL
+);
+
+-- Payments Table
+CREATE TABLE payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    category_id INT NOT NULL,
+    amount_paid DECIMAL(10, 2),
+    payment_date DATE,
+    payment_status ENUM('Pending', 'Approved') DEFAULT 'Pending',
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES fees_categories(id) ON DELETE CASCADE
+);
+
+-- Fees Table
+CREATE TABLE fees (
+    fee_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    amount DECIMAL(10, 2),
+    due_date DATE,
+    status ENUM('Paid', 'Unpaid') DEFAULT 'Unpaid',
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
