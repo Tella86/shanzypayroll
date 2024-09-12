@@ -1,0 +1,58 @@
+
+.demo {
+    font-family: 'Poppins', sans-serif;
+}
+
+.panel {
+    padding: 10px;
+    border-radius: 0;
+}
+
+.panel .panel-heading {
+    padding: 20px 15px 0;
+}
+
+.panel .panel-heading .title {
+    color: #222;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    margin: 0;
+}
+
+.panel .panel-heading .btn {
+    background-color: #6D7AE0;
+    padding: 4px 8px;
+    border-radius: 0;
+    border: none;
+    transition: all 0.3s ease 0s;
+}
+
+.panel .panel-body .table {
+    margin: 0;
+    border: 1px solid #e7e7e7;
+}
+
+.panel .panel-body .table tr td {
+    border-color: #e7e7e7;
+}
+
+.panel .panel-body .table thead tr.active th {
+    color: #fff;
+    background-color: #6D7AE0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0px;
+    border: 1px solid #6D7AE0;
+}
+
+table {
+    border-spacing: 1px; 
+    border-collapse: separate; /* Ensure the spacing works */
+    font-size: smaller;
+}
+
+th {
+    padding: 10px 15px; /* Adjust padding within the header cells */
+    text-align: center;
+}
