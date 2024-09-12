@@ -9,9 +9,9 @@ if ($_SESSION['role'] != 'admin') {
 }
 
 // Fetch all employees from the database with department and job group information
-$query = "SELECT e.*, d.name AS department_name, j.job_group AS job_group_name 
+$query = "SELECT e.*, d.designation_name AS designation_name, j.job_group AS job_group_name 
           FROM employees e 
-          JOIN departments d ON e.department_id = d.id 
+          JOIN designation d ON e.designation_id = d.id 
           JOIN jobgroup j ON e.job_group_id = j.id 
           ORDER BY e.id ASC";
 $employees = mysqli_query($conn, $query);
@@ -19,6 +19,8 @@ $employees = mysqli_query($conn, $query);
 // Fetch departments and job groups for the dropdowns
 $departments = mysqli_query($conn, "SELECT * FROM departments");
 $jobgroups = mysqli_query($conn, "SELECT * FROM jobgroup");
+$departments = mysqli_query($conn, "SELECT * FROM designation");
+
 
 // Check if the employee ID is passed as a query parameter
 if (isset($_GET['id'])) {
@@ -144,7 +146,6 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="container">
     <div class="row">
@@ -165,8 +166,8 @@ if (isset($_GET['id'])) {
         <thead>
         <tr class="active">
                 <th>ID</th>
-                <th>Name</th>
-                <th>Department</th>
+                <th>EMPLOYEE'S NAME</th>
+                <th>DESIGNATION</th>
                 <th>Job Group</th>
                 <th>Basic Salary</th>
                 <th>Medical Allowance</th>
@@ -183,7 +184,7 @@ if (isset($_GET['id'])) {
                 <tr>
                     <td><?= $employee['id'] ?></td>
                     <td><?= $employee['name'] ?></td>
-                    <td><?= $employee['department_name'] ?></td>
+                    <td><?= $employee['designation_name'] ?></td>
                     <td><?= $employee['job_group_name'] ?></td>
                     <td><?= number_format($employee['basic_salary'], 2) ?></td>
                     <td><?= number_format($employee['medical_allowance'], 2) ?></td>

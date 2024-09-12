@@ -17,8 +17,8 @@
              <!-- Search Form -->
 <div class="search-bar">
     <form method="GET" action="" class="d-flex">
-        <input type="text" name="search" placeholder="Search Employee by Name or Department" class="form-control me-2" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
-        <button type="submit" class="btn btn-primary">Search</button>
+        <input type="text" name="search" placeholder="Search Employee by Name or Department" requirequired class="form-control me-2" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+        &nbsp;&nbsp;&nbsp;   <button type="submit" class="btn btn-primary" style="background: #4cc9f0;">Search</button>
     </form>
 </div>
 

@@ -2,16 +2,19 @@
 session_start();
 include('db.php');
 
-// Ensure only admins can access this page
+// // Ensure only admins can access this page
 // if ($_SESSION['role'] != 'admin') {
 //     header('Location: login.php');
 //     exit();
 // }
 
 // Fetch all deductions from the database
-$query = "SELECT d.*, e.name AS employee_name FROM deductions d 
-          JOIN employees e ON d.employee_id = e.id";
+$query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+          FROM deductions d
+          JOIN employees e ON d.employee_id = e.id
+          JOIN designation des ON e.designation_id = des.id";
 $deductions = mysqli_query($conn, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +49,7 @@ $deductions = mysqli_query($conn, $query);
 
     .panel .panel-heading .btn {
         background-color: #6D7AE0;
-        padding: 6px 12px;
+        padding: 4px 8px;
         border-radius: 0;
         border: none;
         transition: all 0.3s ease 0s;
@@ -64,9 +67,9 @@ $deductions = mysqli_query($conn, $query);
     .panel .panel-body .table thead tr.active th {
         color: #fff;
         background-color: #6D7AE0;
-        font-size: 12px;
+        font-size: 16px;
         font-weight: 500;
-        padding: 6px;
+        padding: 0px;
         border: 1px solid #6D7AE0;
     }
     </style>
@@ -91,26 +94,27 @@ $deductions = mysqli_query($conn, $query);
                                     <tr class="active">
                                         <th>#</th>
                                         <th>Employee Name</th>
+                                        <th>Designation</th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#nhifModal"
-                                                style="color: white;">NHIF</button></th>
+                                                style="color: white; padding: 0px;">NHIF</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#nssfModal"
-                                                style="color: white;">NSSF</button></th>
+                                                style="color: white; padding: 0px;">NSSF</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal"
-                                                style="color: white;">PAYE</button></th>
+                                                style="color: white; padding: 0px;">PAYE</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal1"
-                                                style="color: white;">Affordable Housing</button></th>
+                                                style="color: white; padding: 0px;">Affordable Housing</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal2"
-                                                style="color: white;">FamilyBank Loan</button></th>
+                                                style="color: white; padding: 0px;">FamilyBank Loan</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal3"
-                                                style="color: white;">Welfare</button></th>
+                                                style="color: white; padding: 0px;">Welfare</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal4"
-                                                style="color: white;">Kudheiha</button></th>
+                                                style="color: white; padding: 0px;">Kudheiha</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal5"
-                                                style="color: white;">Advance</button></th>
+                                                style="color: white; padding: 0px;">Advance</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal6"
-                                                style="color: white;">Rent</button></th>
+                                                style="color: white; padding: 0px;">Rent</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal7"
-                                                style="color: white;">Imarika Sacco</button></th>
+                                                style="color: white; padding: 0px;">Imarika Sacco</button></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -120,6 +124,8 @@ $deductions = mysqli_query($conn, $query);
                                     <tr>
                                         <td><?= $counter++; ?></td>
                                         <td><?= htmlspecialchars($row['employee_name']); ?></td>
+                                        <td><?= htmlspecialchars($row['designation_name']); ?></td>
+
                                         <td><?= number_format($row['NHIF'], 2); ?></td>
                                         <td><?= number_format($row['NSSF'], 2); ?></td>
                                         <td><?= number_format($row['paye'], 2); ?></td>
@@ -157,31 +163,36 @@ $deductions = mysqli_query($conn, $query);
                         <thead>
                             <tr>
                                 <th>Employee Name</th>
+                                <th>Designation</th>
                                 <th>NHIF Deduction</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            // Fetch NHIF deductions only
-                            $nhifQuery = "SELECT e.name AS employee_name, d.NHIF FROM deductions d 
-                                          JOIN employees e ON d.employee_id = e.id";
-                            $nhifResults = mysqli_query($conn, $nhifQuery);
-                            $nhifTotal = 0;
-                            while ($nhifRow = mysqli_fetch_assoc($nhifResults)) {
-                                $nhifTotal += $nhifRow['NHIF'];
-                                ?>
-                            <tr>
-                                <td><?= htmlspecialchars($nhifRow['employee_name']); ?></td>
-                                <td><?= number_format($nhifRow['NHIF'], 2); ?></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <th><?= number_format($nhifTotal, 2); ?></th>
-                            </tr>
-                        </tfoot>
+               
+               // Fetch NHIF deductions only
+               $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+                         FROM deductions d
+                         JOIN employees e ON d.employee_id = e.id
+                         JOIN designation des ON e.designation_id = des.id
+                         WHERE d.NHIF IS NOT NULL"; // Fetch only rows with NHIF deductions
+               $deductions = mysqli_query($conn, $query);
+               
+               $nhifTotal = 0;
+               while ($nhifRow = mysqli_fetch_assoc($deductions)) {
+                   $nhifTotal += $nhifRow['NHIF'];
+                   ?>
+                   <tr>
+                       <td><?= htmlspecialchars($nhifRow['employee_name']); ?></td>
+                       <td><?= htmlspecialchars($nhifRow['designation_name']); ?></td>
+                       <td><?= number_format($nhifRow['NHIF'], 2); ?></td>
+                   </tr>
+               <?php } ?>
+               <tr>
+                   <th>Total</th>
+                   <th colspan="3"><?= number_format($nhifTotal, 2); ?></th>
+               </tr>
+               
                     </table>
                 </div>
                 <div class="modal-footer">
