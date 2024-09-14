@@ -73,7 +73,16 @@ if ($_SESSION['role'] != 'staff') {
                 <a href="javascript:void(0);" id="viewHome"><i class="fas fa-home"></i> Home</a>
             </li>
             <li>
+                <a href="javascript:void(0);" id="chckinoutlink"><i class="fas fa-file-invoice-dollar"></i> Check in/out</a>
+            </li>
+            <li>
                 <a href="javascript:void(0);" id="viewPayroll"><i class="fas fa-file-invoice-dollar"></i> View Payroll</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="applyleavelink"><i class="fas fa-file-invoice-dollar"></i> Apply Leave</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="statusleavelink"><i class="fas fa-file-invoice-dollar"></i> Leave Status</a>
             </li>
             <li><a href="javascript:void(0);" id="updatepasswordLink"><i class="fas fa-key"></i>update Password</a></li>
 
@@ -114,6 +123,18 @@ if ($_SESSION['role'] != 'staff') {
         // Load view_payroll.php when clicking "View Payroll"
         $('#viewPayroll').on('click', function() {
             $('#content-area').load('view_payroll.php');
+        });
+        
+        $('#applyleavelink').on('click', function() {
+            $('#content-area').load('leave_application.php');
+        });
+
+        $('#statusleavelink').on('click', function() {
+            $('#content-area').load('view_leave_status.php');
+        });
+
+        $('#chckinoutlink').on('click', function() {
+            $('#content-area').load('check_in_out.php');
         });
 
         // Load home content

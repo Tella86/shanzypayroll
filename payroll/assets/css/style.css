@@ -1,70 +1,184 @@
-body {
-    font-family: "Lato", sans-serif;
+/* Fixed Plugin */
+.fixed-plugin {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 1032;
 }
-.wrapper {
+
+.fixed-plugin-button {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.fixed-plugin .card {
+    display: none;
+    right: 0;
+    position: absolute;
+    width: 350px;
+    transition: all 0.3s ease;
+}
+
+.fixed-plugin .card.show {
+    display: block;
+}
+
+.fixed-plugin .card .card-header {
     display: flex;
-    width: 100%;
-    align-items: stretch;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.fixed-plugin-close-button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+/* Sidebar */
 #sidebar {
-    min-width: 180px;
-    max-width: 180px;
-    background: #4cc9f0;
-    color: #fff;
-    transition: all 0.3s;
-}
-#sidebar.active {
-    margin-left: -250px;
-}
-#sidebar ul.components {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
     padding: 20px;
+    color: #fff;
+    background-color: #343a40;
+    transition: all 0.3s ease;
 }
+
+#sidebar .sidebar-header h6 {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#sidebar ul.components {
+    padding-left: 0;
+    list-style: none;
+}
+
 #sidebar ul li {
     padding: 10px;
-    font-size: 1.2em;
+    font-size: 14px;
 }
+
 #sidebar ul li a {
-    color: #fff;
     text-decoration: none;
-}
-#sidebar ul li a:hover {
-    background: #f2e8cf;
-}
-#content {
-    width: 100%;
-    padding: 20px;
-}
-.toggle-btn {
-    background: #4cc9f0;
-    color: #fff;
-    border: none;
-    margin: 10px;
-}
-.settings-icon {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-}
-/* Styling for theme selector container */
-.theme-selector {
+    color: #ffffff;
     display: flex;
-    flex-wrap: wrap;
-    margin: 20px;
+    align-items: center;
+    transition: all 0.3s ease;
 }
-/* Each theme option */
-.theme-option {
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-    cursor: pointer;
-    border: 2px solid transparent;
+
+#sidebar ul li a i {
+    margin-right: 10px;
+}
+
+#sidebar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+/* Card */
+.card {
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.card-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Badge Colors */
+.badge-colors span {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 10px;
+    border: 2px solid transparent;
 }
-.theme-option:hover {
-    border-color: #333;
+
+.badge-colors .active {
+    border-color: #000000;
 }
-.settings-icon {
-    font-size: 24px;
+
+/* Sidebar Button Active */
+.d-flex .btn.active {
+    border-color: #ffffff;
+}
+
+/* Switches */
+.form-check.form-switch input {
+    width: 36px;
+    height: 20px;
+    background-color: #adb5bd;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
     cursor: pointer;
 }
+
+.form-check.form-switch input:checked {
+    background-color: #007bff;
+}
+
+/* Navbar */
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+}
+
+/* Dark Mode */
+body.dark-version {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+body.dark-version .card {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+body.dark-version .navbar-fixed {
+    background-color: #343a40;
+}
+
+body.dark-version .form-check.form-switch input {
+    background-color: #6c757d;
+}
+
+body.dark-version .form-check.form-switch input:checked {
+    background-color: #ffc107;
+}
+body.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #ffffff; /* Light text color */
+  }
+  
+  nav.bg-gradient-dark {
+    background-color: #343a40; /* Dark sidebar */
+  }
+  
+  .card {
+    background-color: #2c2c2c; /* Dark card background */
+    color: #ffffff; /* Light text color for cards */
+  }
+  
+  /* Add more styles as needed for other elements in dark mode */

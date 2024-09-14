@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('db.php'); // Database connection
+include('db.php'); 
 
 // Check if the user is admin
 if ($_SESSION['role'] != 'admin') {
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $pin_no = mysqli_real_escape_string($conn, $_POST['pin_no']);
-    $department_id = intval($_POST['department']);
+    $designation_id = intval($_POST['designation_id']);
     $job_group_id = intval($_POST['job_group']);
     $basic_salary = floatval($_POST['basic_salary']);
     $house_allowance = floatval($_POST['house_allowance_cluster2']);
@@ -26,8 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = mysqli_real_escape_string($conn, $_POST['role']);
 
     // Update employee details using a prepared statement
-    $stmt = $conn->prepare("UPDATE employees SET name=?, email=?, pin_no=?, department_id=?, job_group_id=?, basic_salary=?, house_allowance_cluster2=?, commuter_allowance=?, medical_allowance=?, nssf=?, affordable_housing_levy=?, role=? WHERE id=?");
-    $stmt->bind_param("sssiidddddssi", $name, $email, $pin_no, $department_id, $job_group_id, $basic_salary, $house_allowance, $commuter_allowance, $medical_allowance, $nssf, $housing_levy, $role, $employee_id);
+    $stmt = $conn->prepare("UPDATE employees SET name=?, email=?, pin_no=?, designation_id=?, job_group_id=?, basic_salary=?, house_allowance_cluster2=?, commuter_allowance=?, medical_allowance=?, nssf=?, affordable_housing_levy=?, role=? WHERE id=?");
+    $stmt->bind_param("sssiidddddssi", $name, $email, $pin_no, $designation_id, $job_group_id, $basic_salary, $house_allowance, $commuter_allowance, $medical_allowance, $nssf, $housing_levy, $role, $employee_id);
 
     if ($stmt->execute()) {
         // Show a popup message using JavaScript and redirect to view_deductions.php

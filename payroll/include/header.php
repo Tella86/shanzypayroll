@@ -9,10 +9,7 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="admin_dashboard.php">Dashboard</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-  </button>
+  
    
              <!-- Search Form -->
 <div class="search-bar">
@@ -22,10 +19,10 @@
     </form>
 </div>
 
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav ml-auto">
+  <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto"> -->
           <!-- Notifications Icon -->
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="icon-wrapper icon-wrapper-alt rounded-circle">
                       <i class="fas fa-bell" style="fa-bel; font-size: 20px; "></i>
@@ -35,10 +32,10 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationsDropdown">
                   <a class="dropdown-item" href="#">View all notifications</a>
               </div>
-          </li>
+          </li> -->
 
           <!-- User Dropdown Menu -->
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="icon-wrapper icon-wrapper-alt rounded-circle">
                       <i class="fas fa-user user-icon" style="user-icon; font-size: 30px;  width: 30px; height: 30px; border-radius: 50%;"></i>
@@ -53,5 +50,5 @@
               </div>
           </li>
       </ul>
-  </div>
+  </div> -->
 </nav>
