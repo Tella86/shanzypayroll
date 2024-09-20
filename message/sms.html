@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SMS to Groups</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Send SMS to Groups</h2>
+    <form id="smsForm">
+        <div class="form-group">
+            <label for="group">Select Group</label>
+            <select id="group" class="form-control" required>
+                <option value="">-- Select Group --</option>
+                <option value="all">All</option>
+                <option value="employees">Employees</option>
+                <option value="teachers">Teachers</option>
+                <option value="students">Students</option>
+                <option value="board">Board Members</option>
+                <option value="manual">Enter Phone Number</option>
+            </select>
+        </div>
+
+        <div id="groupSelect" class="form-group hidden">
+            <label for="subGroup">Choose Subgroup</label>
+            <select id="subGroup" class="form-control" required>
+                <option value="">-- Select Subgroup --</option>
+                <option value="employees">Employees</option>
+                <option value="teachers">Teachers</option>
+                <option value="students">Students</option>
+                <option value="board">Board Members</option>
+            </select>
+        </div>
+
+        <div id="employeeSelect" class="form-group hidden">
+            <label for="recipients">Choose Recipients</label>
+            <select id="recipients" class="form-control" multiple>
+                <!-- Options will be populated here via JavaScript -->
+            </select>
+        </div>
+
+        <div id="manualInput" class="form-group hidden">
+            <label for="manualPhone">Manual Phone Number</label>
+            <input type="text" id="manualPhone" class="form-control" placeholder="Enter phone number (e.g. +1234567890)">
+        </div>
+
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" class="form-control" rows="5" placeholder="Enter your message" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Send SMS</button>
+        <div id="result" class="mt-4"></div>
+        <div id="loading" class="hidden">Loading...</div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#group').change(function() {
+                const group = $(this).val();
+                $('#groupSelect, #employeeSelect, #manualInput').addClass('hidden');
+
+                if (group === 'all') {
+                    $('#groupSelect').removeClass('hidden');
+                } else if (group !== 'manual') {
+                    fetch(`get_members.php?group=${group}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (Array.isArray(data)) {
+                                const recipientsSelect = $('#recipients');
+                                recipientsSelect.empty(); // Clear existing options
+                                data.forEach(member => {
+                                    recipientsSelect.append(`<option value="${member.phone}">${member.name} (${member.phone})</option>`);
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error fetching members:', err);
+                        });
+                    $('#employeeSelect').removeClass('hidden');
+                } else {
+                    $('#manualInput').removeClass('hidden');
+                }
+            });
+
+            $('#groupSelect').change(function() {
+                const subgroup = $(this).val();
+                if (subgroup) {
+                    fetch(`get_members.php?group=${subgroup}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (Array.isArray(data)) {
+                                const recipientsSelect = $('#recipients');
+                                recipientsSelect.empty(); // Clear existing options
+                                data.forEach(member => {
+                                    recipientsSelect.append(`<option value="${member.phone}">${member.name} (${member.phone})</option>`);
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error fetching members:', err);
+                        });
+                    $('#employeeSelect').removeClass('hidden');
+                } else {
+                    $('#employeeSelect').addClass('hidden');
+                }
+            });
+
+            $('#smsForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const message = $('#message').val();
+                let recipientPhones = [];
+
+                const group = $('#group').val();
+                if (group !== 'manual') {
+                    $('#recipients option:selected').each(function() {
+                        recipientPhones.push($(this).val());
+                    });
+                } else {
+                    const manualPhone = $('#manualPhone').val();
+                    if (!manualPhone.match(/^\+?\d{1,15}$/)) {
+                        alert('Invalid phone number format. Please enter a valid phone number (e.g. +1234567890)');
+                        return;
+                    }
+                    recipientPhones.push(manualPhone);
+                }
+
+                $('#loading').removeClass('hidden');
+                fetch('send_sms.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message, recipients: recipientPhones }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    $('#loading').addClass('hidden');
+                    const resultDiv = $('#result');
+                    if (data.success) {
+                        resultDiv.html('<div class="alert alert-success">SMS sent successfully!</div>');
+                    } else {
+                        resultDiv.html(`<div class="alert alert-danger">Error sending SMS: ${data.message}</div>`);
+                    }
+                })
+                .catch(error => {
+                    $('#loading').addClass('hidden');
+                    console.error('Error:', error);
+                    $('#result').html('<div class="alert alert-danger">An error occurred.</div>');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

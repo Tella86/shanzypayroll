@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Likes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 50px;
+        }
+        .likes-container {
+            background-color: #1877f2;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        #facebook-likes-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="likes-container">
+        <h2>Facebook Page Likes</h2>
+        <p id="facebook-likes-count">Loading...</p>
+    </div>
+
+    <script>
+        async function fetchFacebookLikes() {
+            const pageId = '617578154987933'; // Replace with your page ID
+
+            try {
+                // Retrieve the access token securely from the backend
+                const accessTokenResponse = await fetch('/get-access-token');
+                
+                if (!accessTokenResponse.ok) {
+                    throw new Error('Failed to fetch access token');
+                }
+
+                const accessToken = await accessTokenResponse.text();
+                const url = `https://graph.facebook.com/v11.0/${pageId}/?fields=fan_count&access_token=${accessToken}`;
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from Facebook API');
+                }
+
+                const data = await response.json();
+
+                if (data.fan_count) {
+                    document.getElementById('facebook-likes-count').innerText = `${data.fan_count} Likes`;
+                } else {
+                    document.getElementById('facebook-likes-count').innerText = 'Likes not available';
+                }
+            } catch (error) {
+                console.error('Error fetching Facebook likes:', error);
+                document.getElementById('facebook-likes-count').innerText = 'Failed to load likes.';
+            }
+        }
+
+        // Fetch likes when the page loads
+        fetchFacebookLikes();
+    </script>
+</body>
+</html>

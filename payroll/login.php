@@ -157,16 +157,16 @@ if (isset($_POST['login'])) {
 </a>
 
         </div>
-        <h2>Staff/Admin Login</h2>
+        <h2>Admin & Staff Login</h2>
         <form action="" method="POST">
             <div class="input-container">
                 <i class="fas fa-user"></i>
-                <input type="email" class="form-control" placeholder="email" name="email" required>
+                <input type="email" class="form-control" placeholder="     email" name="email" required>
 
             </div>
             <div class="input-container">
                 <i class="fas fa-lock"></i>
-                <input type="password" class="form-control" placeholder="password" name="password" required>
+                <input type="password" class="form-control" placeholder="     password" name="password" required>
 
             </div>
             <button class="login-btn" type="submit" name="login">Sign In</button>

@@ -288,7 +288,7 @@ $deductions = mysqli_query($conn, $query);
                                                 style="color: white; padding: 12px;">NSSF</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal"
                                                 style="color: white; padding: 12px;">PAYE</button></th>
-                                        <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal1"
+                                        <th><button class="btn btn-link" data-toggle="modal" data-target="#affordableHousingModal"
                                                 style="color: white; padding: 0px;">Affordable Housing</button></th>
                                         <th><button class="btn btn-link" data-toggle="modal" data-target="#payeModal2"
                                                 style="color: white; padding: 0px;">FamilyBank Loan</button></th>
@@ -312,7 +312,6 @@ $deductions = mysqli_query($conn, $query);
                                         <td><?= $counter++; ?></td>
                                         <td><?= htmlspecialchars($row['employee_name']); ?></td>
                                         <td><?= htmlspecialchars($row['designation_name']); ?></td>
-
                                         <td><?= number_format($row['NHIF'], 2); ?></td>
                                         <td><?= number_format($row['NSSF'], 2); ?></td>
                                         <td><?= number_format($row['paye'], 2); ?></td>
@@ -394,124 +393,114 @@ $deductions = mysqli_query($conn, $query);
         </div>
     </div>
 
-    <!-- NSSF Modal (Similar to NSSF Modal) -->
-    <div class="modal fade" id="nssfModal" tabindex="-1" role="dialog" aria-labelledby="nssfModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" id="nssfContent">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="nssfModalLabel">NSSF Deductions</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Employee Name</th>
-                                <th>Designation</th>
-                                <th>NSSF Deduction</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Fetch NSSF deductions only
-                            $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
-                            FROM deductions d
-                            JOIN employees e ON d.employee_id = e.id
-                            JOIN designation des ON e.designation_id = des.id
-                            WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
-                            $deductions = mysqli_query($conn, $query);
-                            $nssfTotal = 0;
-                            while ($nssfRow = mysqli_fetch_assoc($deductions)) {
-                                $nssfTotal += $nssfRow['NSSF'];
-                                ?>
+    <!-- NSSF Modal -->
+<div class="modal fade" id="nssfModal" tabindex="-1" role="dialog" aria-labelledby="nssfModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="nssfContent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nssfModalLabel">NSSF Deductions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>NSSF Deduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch NSSF deductions only
+                        $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+                                  FROM deductions d
+                                  JOIN employees e ON d.employee_id = e.id
+                                  JOIN designation des ON e.designation_id = des.id
+                                  WHERE d.NSSF IS NOT NULL";
+                        $deductions = mysqli_query($conn, $query);
+
+                        $nssfTotal = 0;
+                        while ($nssfRow = mysqli_fetch_assoc($deductions)) {
+                            $nssfTotal += $nssfRow['NSSF'];
+                        ?>
                             <tr>
                                 <td><?= htmlspecialchars($nssfRow['employee_name']); ?></td>
                                 <td><?= htmlspecialchars($nssfRow['designation_name']); ?></td>
                                 <td><?= number_format($nssfRow['NSSF'], 2); ?></td>
                             </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
-                                <!-- Total in the same column as NHIF figures -->
-                            </tr>
-                        </tfoot>
-                    </table>
+                        <?php } ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <td></td> <!-- Empty cell to maintain column structure -->
+                            <td><strong><?= number_format($nssfTotal, 2); ?></strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <!-- Print and Download Buttons -->
-                    <button type="button" class="btn btn-primary" onclick="printContent('NSSFContent')">Print</button>
-                    <button type="button" class="btn btn-success" onclick="downloadPDF('NSSF')">Download as PDF</button>
+                    <button type="button" class="btn btn-primary" onclick="printContent('nhifContent')">Print</button>
+                    <button type="button" class="btn btn-success" onclick="downloadPDF('NHIF')">Download as PDF</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- PAYE Modal (Similar to PAYE Modal) -->
-    <div class="modal fade" id="payeModal" tabindex="-1" role="dialog" aria-labelledby="payeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" id="payeContent">
+    <!-- PAYE Modal -->
+<div class="modal fade" id="payeModal" tabindex="-1" role="dialog" aria-labelledby="payeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="payeContent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="payeModalLabel">PAYE Deductions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>PAYE Deduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch PAYE deductions only
+                        $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+                                  FROM deductions d
+                                  JOIN employees e ON d.employee_id = e.id
+                                  JOIN designation des ON e.designation_id = des.id
+                                  WHERE d.paye IS NOT NULL";
+                        $deductions = mysqli_query($conn, $query);
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="payeModalLabel">PAYE Deductions</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Employee Name</th>
-                                <th>Designation</th>
-                                <th>PAYE Deduction</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           
-                            <?php
-                            // Fetch NSSF deductions only
-                            $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
-                            FROM deductions d
-                            JOIN employees e ON d.employee_id = e.id
-                            JOIN designation des ON e.designation_id = des.id
-                            WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
-                            $deductions = mysqli_query($conn, $query);
-                            $payeTotal = 0;
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['paye'];
-                                ?>
+                        $payeTotal = 0;
+                        while ($payeRow = mysqli_fetch_assoc($deductions)) {
+                            $payeTotal += $payeRow['paye'];
+                        ?>
                             <tr>
                                 <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
                                 <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
                                 <td><?= number_format($payeRow['paye'], 2); ?></td>
                             </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
+                        <?php } ?>
+                    </tbody>
+                    <tfoot>
                         <tr>
-                                <th>Total</th>
-                                <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
-                                <!-- Total in the same column as NHIF figures -->
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <!-- Prepared/Approved Section -->
-                    <div class="prepared-section">
-                        <p>PREPARED BY: <span class="input-field">Accounts Assistant Name</span></p>
-                        <p>APPROVED BY: <span class="input-field">CHIEF PRINCIPAL / SECRETARY B.O.M.</span></p>
-                        <p>PAYMENT BY: <span class="input-field">COLLEGE BURSAR</span></p>
-                        <p>PAYMENT RECEIVED BY: IMARIKA SACCO SOCIETY LTD</p>
-                    </div>
+                            <th>Total</th>
+                            <td></td> <!-- Empty cell to maintain column structure -->
+                            <td><strong><?= number_format($payeTotal, 2); ?></strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -522,61 +511,62 @@ $deductions = mysqli_query($conn, $query);
             </div>
         </div>
     </div>
-
-    <!-- PAYE Modal (Similar to Affordable Housing Modal) -->
-    <div class="modal fade" id="payeModal1" tabindex="-1" role="dialog" aria-labelledby="payeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" id="affordablehousinglevyfContent">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="payeModalLabel">Affordable Housing Deductions</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Employee Name</th>
-                                <th>Designation</th>
-                                <th>Affordable Housing</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                             // Fetch NSSF deductions only
-                             $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
-                             FROM deductions d
-                             JOIN employees e ON d.employee_id = e.id
-                             JOIN designation des ON e.designation_id = des.id
-                             WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
-                             $deductions = mysqli_query($conn, $query);
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['affordable_housing_levy'];
-                                ?>
-                            <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['affordable_housing_levy'], 2); ?></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
+<!-- Affordable Housing Levy Modal -->
+<div class="modal fade" id="affordableHousingModal" tabindex="-1" role="dialog" aria-labelledby="affordableHousingModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="affordableHousingContent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="affordableHousingModalLabel">Affordable Housing Deductions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                                <th>Total</th>
-                                <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
-                                <!-- Total in the same column as NHIF figures -->
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>Affordable Housing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch Affordable Housing Levy deductions only
+                        $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+                                  FROM deductions d
+                                  JOIN employees e ON d.employee_id = e.id
+                                  JOIN designation des ON e.designation_id = des.id
+                                  WHERE d.affordable_housing_levy IS NOT NULL";
+                        $deductions = mysqli_query($conn, $query);
+
+                        $affordableHousingTotal = 0;
+                        while ($levyRow = mysqli_fetch_assoc($deductions)) {
+                            $affordableHousingTotal += $levyRow['affordable_housing_levy'];
+                        ?>
+                            <tr>
+                                <td><?= htmlspecialchars($levyRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($levyRow['designation_name']); ?></td>
+                                <td><?= number_format($levyRow['affordable_housing_levy'], 2); ?></td>
                             </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        <?php } ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <td></td> <!-- Empty cell to maintain column structure -->
+                            <td><strong><?= number_format($affordableHousingTotal, 2); ?></strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+ 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <!-- Print and Download Buttons -->
                     <button type="button" class="btn btn-primary"
-                        onclick="printContent('affordablehousinglevyfContent')">Print</button>
+                        onclick="printContent('affordableHousingContent')">Print</button>
                     <button type="button" class="btn btn-success"
                         onclick="downloadPDF('affordablehousinglevy')">Download as PDF</button>
                 </div>
@@ -613,14 +603,14 @@ $deductions = mysqli_query($conn, $query);
                              JOIN designation des ON e.designation_id = des.id
                              WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
                              $deductions = mysqli_query($conn, $query);
-                            $payeTotal = 0;
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['family_bank_loan'];
+                            $familyBanklTotal = 0;
+                            while ($loanRow = mysqli_fetch_assoc($deductions)) {
+                                $familyBanklTotal += $loanRow['family_bank_loan'];
                                 ?>
                             <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['family_bank_loan'], 2); ?></td>
+                                <td><?= htmlspecialchars($loanRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($loanRow['designation_name']); ?></td>
+                                <td><?= number_format($loanRow['family_bank_loan'], 2); ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -628,7 +618,7 @@ $deductions = mysqli_query($conn, $query);
                         <tr>
                                 <th>Total</th>
                                 <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
+                                <td><strong><?= number_format($familyBanklTotal, 2); ?></td>
                                 <!-- Total in the same column as NHIF figures -->
                             </tr>
                         </tfoot>
@@ -674,14 +664,14 @@ $deductions = mysqli_query($conn, $query);
                              JOIN designation des ON e.designation_id = des.id
                              WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
                              $deductions = mysqli_query($conn, $query);
-                            $payeTotal = 0;
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['welfare'];
+                            $welfareTotal = 0;
+                            while ($welfareRow = mysqli_fetch_assoc($deductions)) {
+                                $welfareTotal += $welfareRow['welfare'];
                                 ?>
                             <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['welfare'], 2); ?></td>
+                                <td><?= htmlspecialchars($welfareRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($welfareRow['designation_name']); ?></td>
+                                <td><?= number_format($welfareRow['welfare'], 2); ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -689,7 +679,7 @@ $deductions = mysqli_query($conn, $query);
                         <tr>
                                 <th>Total</th>
                                 <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
+                                <td><strong><?= number_format($welfareTotal, 2); ?></td>
                                 <!-- Total in the same column as NHIF figures -->
                             </tr>
                         </tfoot>
@@ -736,14 +726,14 @@ $deductions = mysqli_query($conn, $query);
                             JOIN designation des ON e.designation_id = des.id
                             WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
                             $deductions = mysqli_query($conn, $query);
-                            $payeTotal = 0;
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['kudheiha'];
+                            $kudheihaTotal = 0;
+                            while ($kudheihaRow = mysqli_fetch_assoc($deductions)) {
+                                $kudheihaTotal += $kudheihaRow['kudheiha'];
                                 ?>
                             <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['kudheiha'], 2); ?></td>
+                                <td><?= htmlspecialchars($kudheihaRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($kudheihaRow['designation_name']); ?></td>
+                                <td><?= number_format($kudheihaRow['kudheiha'], 2); ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -751,7 +741,7 @@ $deductions = mysqli_query($conn, $query);
                         <tr>
                                 <th>Total</th>
                                 <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
+                                <td><strong><?= number_format($kudheihaTotal, 2); ?></td>
                                 <!-- Total in the same column as NHIF figures -->
                             </tr>
                         </tfoot>
@@ -798,14 +788,14 @@ $deductions = mysqli_query($conn, $query);
                         JOIN designation des ON e.designation_id = des.id
                         WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
                         $deductions = mysqli_query($conn, $query);
-                        $payeTotal = 0;
-                        while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                            $payeTotal += $payeRow['advance'];
+                        $advanceTotal = 0;
+                        while ($advanceRow = mysqli_fetch_assoc($deductions)) {
+                            $advanceTotal += $advanceRow['advance'];
                             ?>
                             <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['advance'], 2); ?></td>
+                                <td><?= htmlspecialchars($advanceRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($advanceRow['designation_name']); ?></td>
+                                <td><?= number_format($advanceRow['advance'], 2); ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -813,7 +803,7 @@ $deductions = mysqli_query($conn, $query);
                         <tr>
                                 <th>Total</th>
                                 <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
+                                <td><strong><?= number_format($advanceTotal, 2); ?></td>
                                 <!-- Total in the same column as NHIF figures -->
                             </tr>
                         </tfoot>
@@ -857,16 +847,16 @@ $deductions = mysqli_query($conn, $query);
                         FROM deductions d
                         JOIN employees e ON d.employee_id = e.id
                         JOIN designation des ON e.designation_id = des.id
-                        WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
+                        WHERE d.rent IS NOT NULL"; 
                         $deductions = mysqli_query($conn, $query);
-                            $payeTotal = 0;
-                            while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                                $payeTotal += $payeRow['rent'];
+                            $rentTotal = 0;
+                            while ($rentRow = mysqli_fetch_assoc($deductions)) {
+                                $rentTotal += $rentRow['rent'];
                                 ?>
                             <tr>
-                                <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                                <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                                <td><?= number_format($payeRow['rent'], 2); ?></td>
+                                <td><?= htmlspecialchars($rentRow['employee_name']); ?></td>
+                                <td><?= htmlspecialchars($rentRow['designation_name']); ?></td>
+                                <td><?= number_format($rentRow['rent'], 2); ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -874,7 +864,7 @@ $deductions = mysqli_query($conn, $query);
                         <tr>
                                 <th>Total</th>
                                 <td></td> <!-- Empty cell to maintain column structure -->
-                                <td><strong><?= number_format($nhifTotal, 2); ?></td>
+                                <td><strong><?= number_format($rentTssssssotal, 2); ?></td>
                                 <!-- Total in the same column as NHIF figures -->
                             </tr>
                         </tfoot>
@@ -911,30 +901,30 @@ $deductions = mysqli_query($conn, $query);
                     </thead>
                     <tbody>
                         <?php
-                           // Fetch NSSF deductions only
-                    $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
-                    FROM deductions d
-                    JOIN employees e ON d.employee_id = e.id
-                    JOIN designation des ON e.designation_id = des.id
-                    WHERE d.NSSF IS NOT NULL"; // Fetch only rows with NHIF deductions
-                    $deductions = mysqli_query($conn, $query);
-                        $payeTotal = 0;
-                        while ($payeRow = mysqli_fetch_assoc($deductions)) {
-                            $payeTotal += $payeRow['imarika_sacco'];
-                            ?>
+                        // Fetch imarika_sacco deductions only
+                        $query = "SELECT d.*, e.name AS employee_name, des.designation_name AS designation_name 
+                                  FROM deductions d
+                                  JOIN employees e ON d.employee_id = e.id
+                                  JOIN designation des ON e.designation_id = des.id
+                                  WHERE d.imarika_sacco IS NOT NULL";
+                        $deductions = mysqli_query($conn, $query);
+
+                        $saccoTotal = 0; // Initialize $saccoTotal variable
+                        while ($imarikaRow = mysqli_fetch_assoc($deductions)) {
+                            $saccoTotal += $imarikaRow['imarika_sacco']; // Calculate total for Imarika Sacco
+                        ?>
                         <tr>
-                            <td><?= htmlspecialchars($payeRow['employee_name']); ?></td>
-                            <td><?= htmlspecialchars($payeRow['designation_name']); ?></td>
-                            <td><?= number_format($payeRow['imarika_sacco'], 2); ?></td>
+                            <td><?= htmlspecialchars($imarikaRow['employee_name']); ?></td>
+                            <td><?= htmlspecialchars($imarikaRow['designation_name']); ?></td>
+                            <td><?= number_format($imarikaRow['imarika_sacco'], 2); ?></td>
                         </tr>
                         <?php } ?>
                     </tbody>
                     <tfoot>
-                    <tr>
+                        <tr>
                             <th>Total</th>
                             <td></td> <!-- Empty cell to maintain column structure -->
-                            <td><strong><?= number_format($nhifTotal, 2); ?></td>
-                            <!-- Total in the same column as NHIF figures -->
+                            <td><strong><?= number_format($saccoTotal, 2); ?></strong></td>
                         </tr>
                     </tfoot>
                 </table>

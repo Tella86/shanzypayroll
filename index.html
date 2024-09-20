@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+  
+            <!-- You can use open graph tags to customize link previews.
+            Learn more: https://developers.facebook.com/docs/sharing/webmasters -->
+          <meta property="og:url"           content="http://localhost/shanzypayroll/index.html" />
+          <meta property="og:type"          content="http://localhost/shanzypayroll" />
+          <meta property="og:title"         content="ezems" />
+          <meta property="og:description"   content="Your description" />
+          <meta property="og:image"         content="https://www.your-domain.com/path/image.jpg" />
+      
+    <title>Facebook Page Likes</title>
+    <style>
+        .likes-container {
+            width: 300px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .likes-container h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #facebook-likes-count {
+            font-size: 20px;
+            color: #3b5998;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="likes-container">
+        <h2>Facebook Page Likes</h2>
+        <p id="facebook-likes-count">Loading...</p>
+    </div>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v20.0&appId=414952094384041" nonce="OXI9qYNS"></script>
+    <div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-width="" data-layout="" data-action="" data-size="" data-share="true"></div>
+<script>
+    
+        async function fetchFacebookLikes() {
+            // Replace with your actual Page ID and Access Token
+            const pageId = '617578154987933';
+            const accessToken = 'EAAF5ZAZAAvP6kBO4ZBMgjdrC1ZCE7FPCp0Y12erFmw9wIP4KrKavNfgpeHIztyVF0vqnreOye7oao4duX6nYvFhFKhXZCRGeGjQq8k8wExwJTFcs5Cr88Uu8NDjo9Uzy4LdAYtMIXZBe0wNxjngATRqyExe2ATbMLtVsKHakYjXEjkYwvUZBuvTZAKiMUiYZANV5IGgZDZD';
+
+            const url = `https://graph.facebook.com/${pageId}?fields=fan_count&access_token=${accessToken}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                document.getElementById('facebook-likes-count').innerText = `${data.fan_count} likes`;
+            } catch (error) {
+                document.getElementById('facebook-likes-count').innerText = 'Error fetching likes';
+            }
+        }
+
+        window.onload = fetchFacebookLikes;
+    </script>
+ <!-- Load Facebook SDK for JavaScript -->
+ <div id="fb-root"></div>
+ <script async defer crossorigin="anonymous" 
+       src="https://connect.facebook.net/en_US/sdk.js#xfbml=1
+            &version={graph-api-version}
+            &appId={your-facebook-app-id}" 
+       nonce="FOKrbAYI">
+ </script>
+
+ <!-- Your like button code -->
+ <div class="fb-like" 
+      data-href="https://www.your-domain.com/your-page.html" 
+      data-width=""
+      data-layout="standard" 
+      data-action="like" 
+      data-size="small"  
+      data-share="true">
+ </div>
+
+</body>
+</html>

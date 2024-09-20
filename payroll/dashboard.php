@@ -12,8 +12,8 @@ include 'db.php';
 $employee_id = $_SESSION['user_id'];
 
 // Fetch attendance records for the logged-in employee
-$query = "SELECT * FROM attendance WHERE employee_id = '$employee_id' ORDER BY date DESC";
-$attendance_records = mysqli_query($conn, $query);
+// $query = "SELECT * FROM attendance WHERE employee_id = '$employee_id' ORDER BY date DESC";
+// $attendance_records = mysqli_query($conn, $query);
 
 // Fetch total number of check-ins for all employees
 $total_attendance_query = "SELECT COUNT(*) AS total_attendance FROM attendance";
@@ -21,8 +21,12 @@ $total_attendance_result = mysqli_query($conn, $total_attendance_query);
 $total_attendance = mysqli_fetch_assoc($total_attendance_result)['total_attendance'];
 
 // Fetch all employee attendance records
-$all_attendance_query = "SELECT * FROM attendance ORDER BY date DESC";
-$all_attendance_records = mysqli_query($conn, $all_attendance_query);
+// $query = "SELECT attendance.date, employees.name, attendance.status 
+//           FROM attendance 
+//           JOIN employees ON attendance.employee_id = employees.id";
+
+// $all_attendance_records = mysqli_query($conn, $query);
+
 // Fetch unread notifications
 $unread_query = "SELECT * FROM notifications WHERE is_read = 0 ORDER BY created_at DESC LIMIT 5";
 $unread_result = mysqli_query($conn, $unread_query);
@@ -237,6 +241,14 @@ $searchResult = mysqli_query($conn, $searchQuery);
                         <span class="nav-link-text ms-1">Leave Request</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="attendance.php">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">book</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Attendance</span>
+                    </a>
+                </li>
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
                     </h6>
@@ -298,12 +310,41 @@ $searchResult = mysqli_query($conn, $searchQuery);
                             </li>
                         </ul>
                         <li class="mt-2">
-                            <a class="github-button" href="https://github.com/Tella86/shanzypayroll"
-                                data-icon="octicon-star" data-size="large" data-show-count="true"
-                                aria-label="Star creativetimofficial/material-dashboard on GitHub">Star</a>
-                        </li>&NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;
+                            <a class="facbook-button" href="https://web.facebook.com/ezemstech" data-icon="octicon-star"
+                                data-size="large" data-show-count="true"
+                                aria-label="Like creativetimofficial/material-dashboard on facebook">Likes</a>
+                            <span id="facebook-likes-count">Loading...</span>
+                        </li>
+                        <script>
+                        async function fetchFacebookLikes() {
+                            const pageId = '617578154987933'; // Replace with your page ID
+                            const accessToken =
+                                'EAAF5ZAZAAvP6kBO4ZBMgjdrC1ZCE7FPCp0Y12erFmw9wIP4KrKavNfgpeHIztyVF0vqnreOye7oao4duX6nYvFhFKhXZCRGeGjQq8k8wExwJTFcs5Cr88Uu8NDjo9Uzy4LdAYtMIXZBe0wNxjngATRqyExe2ATbMLtVsKHakYjXEjkYwvUZBuvTZAKiMUiYZANV5IGgZDZD'; // Replace with a secure token from your backend
 
-                       
+                            const url =
+                                `https://graph.facebook.com/v11.0/${pageId}/?fields=fan_count&access_token=${accessToken}`;
+
+                            try {
+                                const response = await fetch(url);
+                                const data = await response.json();
+
+                                if (data.fan_count) {
+                                    document.getElementById('facebook-likes-count').innerText =
+                                        `${data.fan_count} Likes`;
+                                } else {
+                                    document.getElementById('facebook-likes-count').innerText =
+                                        'Likes not available';
+                                }
+                            } catch (error) {
+                                console.error('Error fetching Facebook likes:', error);
+                                document.getElementById('facebook-likes-count').innerText = 'Failed to load likes.';
+                            }
+                        }
+
+                        // Fetch likes when the page loads
+                        fetchFacebookLikes();
+                        </script>
+                        &NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;
                         <!-- Notification Bell Icon with Badge -->
                         <nav class="navbar-nav">
                             <a class="navbar-brand" href="#"></a>
@@ -521,76 +562,81 @@ $searchResult = mysqli_query($conn, $searchQuery);
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mt-4 mb-4">
-    <div class="card z-index-2">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-            <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
-            <h5 class="mb-4"><hr>&NonBreakingSpace; &NonBreakingSpace;&NonBreakingSpace;
-                 &NonBreakingSpace;&NonBreakingSpace; &NonBreakingSpace;Attendance History</hr></h5>
-                <div class="chart">
-                
-                    <canvas id="chart-line" class="chart-canvas" height="25"></canvas>
+                    <div class="card z-index-2">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+                                <h5 class="mb-4">
+                                    <hr>&NonBreakingSpace; &NonBreakingSpace;&NonBreakingSpace;
+                                    &NonBreakingSpace;&NonBreakingSpace; &NonBreakingSpace;Attendance History</hr>
+                                </h5>
+                                <div class="chart">
+
+                                    <canvas id="chart-line" class="chart-canvas" height="25"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <table class="table table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = mysqli_fetch_assoc($attendance_records)): ?>
+                                    <tr>
+                                        <td><?php echo $row['date']; ?></td>
+                                        <td><?php echo $row['status']; ?></td>
+                                    </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+
+                            <hr class="dark horizontal">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Employee Attendance</h6>
+                                <p class="text-sm mb-0">(<span
+                                        class="font-weight-bolder"><?php echo $total_attendance; ?></span>) total
+                                    check-ins.</p>
+                            </div>
+
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="material-icons text-sm me-2">schedule</i>
+                                <p class="mb-0 text-sm">updated 4 min ago</p>
+                            </div>
+
+                            <div class="card-footer mt-3">
+                                <button class="btn btn-primary w-100" id="showAllAttendance">Show All Employee
+                                    Attendance</button>
+                            </div>
+
+                            <div id="allAttendance" class="mt-4" style="display:none;">
+                                <h6>All Employee Attendance</h6>
+                                <table class="table table-bordered table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee's Name</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($row = mysqli_fetch_assoc($all_attendance_records)): ?>
+                                        <tr>
+                                            <td><?php echo $row['date']; ?></td>
+                                            <td><?php echo $row['name']; ?></td>
+                                            <td><?php echo $row['status']; ?></td>
+                                        </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="card-body">
-           
-            <table class="table table-bordered table-responsive">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = mysqli_fetch_assoc($attendance_records)): ?>
-                        <tr>
-                            <td><?php echo $row['date']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-
-            <hr class="dark horizontal">
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Employee Attendance</h6>
-                <p class="text-sm mb-0">(<span class="font-weight-bolder"><?php echo $total_attendance; ?></span>) total check-ins.</p>
-            </div>
-
-            <div class="d-flex align-items-center mt-2">
-                <i class="material-icons text-sm me-2">schedule</i>
-                <p class="mb-0 text-sm">updated 4 min ago</p>
-            </div>
-            
-            <div class="card-footer mt-3">
-                <button class="btn btn-primary w-100" id="showAllAttendance">Show All Employee Attendance</button>
-            </div>
-
-            <div id="allAttendance" class="mt-4" style="display:none;">
-                <h6>All Employee Attendance</h6>
-                <table class="table table-bordered table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Employee ID</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = mysqli_fetch_assoc($all_attendance_records)): ?>
-                            <tr>
-                                <td><?php echo $row['date']; ?></td>
-                                <td><?php echo $row['employee_id']; ?></td>
-                                <td><?php echo $row['status']; ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
                 <div class="col-lg-4 mt-4 mb-3">
                     <div class="card z-index-2 ">
@@ -1100,7 +1146,7 @@ $searchResult = mysqli_query($conn, $searchQuery);
     <script src="assets/js/smooth-scrollbar.min.js"></script>
     <script src="assets/js/chartjs.min.js"></script>
     <script>
-         document.getElementById('showAllAttendance').addEventListener('click', function() {
+    document.getElementById('showAllAttendance').addEventListener('click', function() {
         var allAttendanceDiv = document.getElementById('allAttendance');
         if (allAttendanceDiv.style.display === 'none') {
             allAttendanceDiv.style.display = 'block';
@@ -1108,6 +1154,7 @@ $searchResult = mysqli_query($conn, $searchQuery);
             allAttendanceDiv.style.display = 'none';
         }
     });
+
     function markAsRead(notification_id) {
         // Send an AJAX request to mark the notification as read
         $.ajax({
@@ -1378,7 +1425,32 @@ $searchResult = mysqli_query($conn, $searchQuery);
         }
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId: '{your-app-id}',
+            cookie: true,
+            xfbml: true,
+            version: '{api-version}'
+        });
+
+        FB.AppEvents.logPageView();
+
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
     </script>
+
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
