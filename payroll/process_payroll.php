@@ -95,8 +95,13 @@ if (isset($_POST['process_payroll'])) {
   <!-- Nucleo Icons -->
   <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/datatables.css">
+  <link rel="stylesheet" href="assets/css/datatables.min.css">
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.datatables.net/v/dt/dt-2.1.7/datatables.min.css" rel="stylesheet">
+ 
+<script src="https://cdn.datatables.net/v/dt/dt-2.1.7/datatables.min.js"></script>
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->

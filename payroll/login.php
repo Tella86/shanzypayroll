@@ -63,89 +63,102 @@ if (isset($_POST['login'])) {
         </div>
     </div>
 </body> -->
+
 </html>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Members Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .login-container {
-            width: 320px;
-            background-color: #2b2b2b;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .top-icons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .top-icons i {
-            color: #fff;
-            background-color: #e51b38;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 18px;
-        }
-        .login-container h2 {
-            color: #fff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .input-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        .input-container i {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            color: #fff;
-            background-color: #e51b38;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .input-container input {
-            width: 100%;
-            padding: 10px 15px 10px 45px;
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .input-container input:focus {
-            outline: none;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #e51b38;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .login-btn:hover {
-            background-color: #b4162e;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .login-container {
+        width: 320px;
+        background-color: #2b2b2b;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-icons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-icons i {
+        color: #fff;
+        background-color: #e51b38;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+    .login-container h2 {
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .input-container {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .input-container i {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        color: #fff;
+        background-color: #e51b38;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .input-container input {
+        width: 100%;
+        padding: 10px 15px 10px 45px;
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .input-container input:focus {
+        outline: none;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #e51b38;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .login-btn:hover {
+        background-color: #b4162e;
+    }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="top-icons">
@@ -153,27 +166,50 @@ if (isset($_POST['login'])) {
             <i class="fas fa-plus"></i>
             <i class="fas fa-key"></i>
             <a href="contact_us.html">
-    <i class="fas fa-envelope"></i>
-</a>
+                <i class="fas fa-envelope"></i>
+            </a>
 
         </div>
         <h2>Admin & Staff Login</h2>
         <form action="" method="POST">
             <div class="input-container">
-                <i class="fas fa-user"></i>
-                <input type="email" class="form-control" placeholder="     email" name="email" required>
+                <i class="fas fa-user" style="font-size: 10px;"></i>
+                <input type="email" class="form-control" placeholder="email" name="email" required>
 
             </div>
             <div class="input-container">
-                <i class="fas fa-lock"></i>
-                <input type="password" class="form-control" placeholder="     password" name="password" required>
+                <i class="fas fa-eye" id="showPassword" style="font-size: 10px;"></i>
+                <input type="password" class="form-control" placeholder="Password" name="password" id="passwordField"
+                    value="<?php echo isset($_COOKIE['password']) ? $_COOKIE['password'] : ''; ?>" required>
 
             </div>
+
+            <div class="input-container" style="display: flex; float: left; font-size: 10px;">
+                <input type="checkbox" name="remember" id="remember"
+                    <?php if(isset($_COOKIE['email'])) echo 'checked'; ?>>
+                <label for="remember" style="color: #fff; display: flex; font-size: 15px;">Remember Me</label>
+            </div>
+
             <button class="login-btn" type="submit" name="login">Sign In</button>
         </form>
         <div class="text-center mt-3">
-            <a href="forgot_password.php" class="btn btn-link">Forgot Password?</a>
+            <a href="forgot_password.php" class="btn btn-link" style="color: White;">Forgot Password?</a>
         </div>
     </div>
+    <script>
+    const showPasswordToggle = document.getElementById('showPassword');
+    const passwordField = document.getElementById('passwordField');
+
+    showPasswordToggle.addEventListener('click', function() {
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            showPasswordToggle.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            showPasswordToggle.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+    </script>
 </body>
+
 </html>
